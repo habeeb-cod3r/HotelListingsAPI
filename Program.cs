@@ -1,5 +1,7 @@
 using HotelListingAPI.Configurations;
 using HotelListingAPI.Data;
+using HotelListingAPI.IRepository;
+using HotelListingAPI.Repository;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -19,7 +21,9 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 {
     options.UseSqlServer(configuration.GetConnectionString("Conn"));
 });
-builder.Services.AddControllers();
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddControllers().AddNewtonsoftJson(op => op.SerializerSettings.ReferenceLoopHandling 
+= Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 builder.Services.AddCors(o =>
 {
     o.AddPolicy("CorsPolicy", builder =>
